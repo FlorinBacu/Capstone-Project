@@ -16,6 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
 
 import java.util.ArrayList;
@@ -36,7 +41,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      * device.
      */
     private boolean mTwoPane;
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +69,10 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         }
 
         getLoaderManager().initLoader(0, null, this);
+        MobileAds.initialize(this,    "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
