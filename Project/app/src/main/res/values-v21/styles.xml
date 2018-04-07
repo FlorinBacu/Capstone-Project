@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Material.Light.NoActionBar.Light" parent="android:Theme.Material.Light" />
+
+    <style name="AppTheme" parent="android:Theme.Material.Light" >
+        <item name="android:colorPrimary">#ea80fc</item>
+        <item name="android:colorPrimaryDark">#b64fc8</item>
+        <item name="android:colorAccent">#ffb2ff</item>
+        <item name="android:navigationBarColor">#b64fc8</item>
+        <item name="android:statusBarColor">#b64fc8</item>
+    </style>
+
+    <style name="ThemeMoma" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#ea80fc</item>
+        <item name="colorPrimaryDark">#b64fc8</item>
+        <item name="colorAccent">#ffb2ff</item>
+        <item name="android:statusBarColor">#b64fc8</item>
+        <item name="android:navigationBarColor">#b64fc8</item>
+    </style>
+</resources>

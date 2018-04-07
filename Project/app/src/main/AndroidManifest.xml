@@ -13,7 +13,7 @@
         <activity
             android:name=".ItemListActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/ThemeMoma">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
             android:name=".ItemDetailActivity"
             android:label="@string/title_item_detail"
             android:parentActivityName=".ItemListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/ThemeMoma">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nanodegree.florinbacu.com.newmovies.ItemListActivity" />
