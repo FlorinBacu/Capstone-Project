@@ -4,6 +4,8 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -42,6 +45,15 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      */
     private boolean mTwoPane;
     AdView mAdView;
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +79,13 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-
+    if(isOnline()) {
         getLoaderManager().initLoader(0, null, this);
+    }
+    else
+    {
+        Toast.makeText(this,"No internet available",Toast.LENGTH_LONG).show();
+    }
         MobileAds.initialize(this,    "ca-app-pub-3940256099942544~3347511713");
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
