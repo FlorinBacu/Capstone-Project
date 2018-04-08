@@ -49,7 +49,7 @@ public class ItemDetailFragment extends Fragment {
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
 
-
+            mItem=ContentLoader.ITEMS.get(Integer.parseInt(getArguments().getString(ARG_ITEM_ID)));
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
@@ -68,7 +68,7 @@ public class ItemDetailFragment extends Fragment {
             ((TextView)rootView.findViewById(R.id.date_detail)).setText(mItem.title.split("-")[0]);
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(Html.fromHtml(mItem.details));
         }
-        FloatingActionButton fab = (FloatingActionButton)  rootView.findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton)  rootView.findViewById(R.id.fabf);
         if(fab!=null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
