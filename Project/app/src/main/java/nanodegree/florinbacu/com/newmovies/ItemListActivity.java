@@ -142,7 +142,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                             list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail));
                             cursor.moveToNext();
                         }
-                        Toast.makeText(context,"data loaded from database",Toast.LENGTH_LONG).show();
+
                         return list;
                     }
                 else
@@ -157,10 +157,12 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
             @Override
             protected void onPostExecute(List<ContentLoader.ItemRSS> listout) {
+
                 if(listout.size()==0) {
                     Toast.makeText(context, "database is empty", Toast.LENGTH_LONG).show();
                     return;
                 }
+                Toast.makeText(context,"data loaded from database",Toast.LENGTH_LONG).show();
                 super.onPostExecute(listout);
                 ContentLoader.ITEMS=listout;
                 ContentLoader.COUNT=listout.size();
