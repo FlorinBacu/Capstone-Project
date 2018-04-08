@@ -261,7 +261,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     .inflate(R.layout.item_list_content, parent, false);
             return new ViewHolder(view);
         }
-        private static Semaphore sema=new Semaphore(5);
+        private static Semaphore sema=new Semaphore(4);
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
 
@@ -279,9 +279,10 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                 protected String doInBackground(String... urls) {
 
 
-                    Document doc = null;
+
                     try {
-                        doc = Jsoup.connect(urls[0]).get();
+                        sema.acquire();
+                        Document doc = Jsoup.connect(urls[0]).get();
 
                     Elements scripts = doc.getElementsByTag("script");
                         int i;
@@ -291,17 +292,20 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                                 JSONObject obj = new JSONObject(json);
                                 JSONArray array = obj.getJSONArray("workPresented");
                                 String imageURL = array.getJSONObject(0).getString("image");
-
+                                sema.release();
                                 return imageURL;
                             }
                         }
+
+
+                    sema.release();
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-
-
                     return null;
                 }
 
