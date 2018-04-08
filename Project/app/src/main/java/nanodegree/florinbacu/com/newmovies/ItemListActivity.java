@@ -2,6 +2,7 @@ package nanodegree.florinbacu.com.newmovies;
 
 import android.app.LoaderManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -47,7 +48,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-
+    public static boolean first_load=false;
     private boolean mTwoPane;
     AdView mAdView;
     protected boolean isOnline() {
@@ -73,7 +74,22 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "data save in database", Snackbar.LENGTH_LONG)
+                resolver.delete(MovieContract.CONTENT_URI,null,null);
+                int i;
+                int count=ContentLoader.ITEMS.size();
+                ContentValues []cvs=new ContentValues[count];
+                ContentValues cv;
+                for(i=0;i<count;i++)
+                {
+                    cv=new ContentValues();
+
+                    cv.put(MovieContract.MovieEntry.COLUMN_ID,ContentLoader.ITEMS.get(i).id);
+                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,ContentLoader.ITEMS.get(i).title);
+                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_DETAIL,ContentLoader.ITEMS.get(i).details);
+                    cvs[i]=cv;
+                }
+                resolver.bulkInsert(MovieContract.CONTENT_URI,cvs);
+                Snackbar.make(view, "data saved in database", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -105,17 +121,15 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             }
             @Override
             protected List<ContentLoader.ItemRSS> doInBackground(Cursor ...cursors) {
-                Cursor cursor = resolver.query(MovieContract.CONTENT_URI, null, null, null, null);
+
+
                 ArrayList<ContentLoader.ItemRSS> list=new ArrayList<ContentLoader.ItemRSS>();
-                if(cursor.getCount()==0)
-                {
-
-                }
-                else
-                {
-
-                    if(ContentLoader.ITEMS.size()==0)
+                    if(!first_load)
                     {
+
+                        first_load=true;
+                        Cursor cursor = resolver.query(MovieContract.CONTENT_URI, null, null, null, null);
+
                     int index_title=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_TITLE);
                     int index_detail=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_DETAIL);
                     int index_id=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID);
@@ -129,12 +143,16 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                             cursor.moveToNext();
                         }
                         Toast.makeText(context,"data loaded from database",Toast.LENGTH_LONG).show();
+                        return list;
+                    }
+                else
+                    {
+                       return ContentLoader.ITEMS;
                     }
 
 
 
-                }
-                return list;
+
             }
 
             @Override
@@ -233,7 +251,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mContentView.setText(mValues.get(position).title);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);

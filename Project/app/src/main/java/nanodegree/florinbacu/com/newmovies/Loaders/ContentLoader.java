@@ -172,18 +172,18 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
      */
     public static class ItemRSS {
         public final String id;
-        public final String content;
+        public final String title;
         public final String details;
 
         public ItemRSS(String id, String title, String description) {
             this.id = id;
-            this.content = title;
+            this.title = title;
             this.details = description;
         }
 
         @Override
         public String toString() {
-            return content;
+            return title;
         }
     }
 }
