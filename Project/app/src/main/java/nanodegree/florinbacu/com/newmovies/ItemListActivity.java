@@ -142,7 +142,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                             list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail));
                             cursor.moveToNext();
                         }
-
+                    
                         return list;
                     }
                 else

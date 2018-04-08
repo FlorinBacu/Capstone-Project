@@ -11,6 +11,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
+
 /**
  * An activity representing a single Item detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -30,8 +32,15 @@ public class ItemDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent=new Intent(Intent.ACTION_SEND);
+                String arg_id = getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID);
+                ContentLoader.ItemRSS item=ContentLoader.ITEMS.get(Integer.parseInt(arg_id));
+                intent.setType("text/html");
+                String shareBody=item.details;
+                String shareSubject=item.title;
+                intent.putExtra(Intent.EXTRA_SUBJECT,shareSubject);
+                intent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                startActivity(Intent.createChooser(intent,"Share using"));
             }
         });
 
