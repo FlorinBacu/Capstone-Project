@@ -1,8 +1,12 @@
 package nanodegree.florinbacu.com.newmovies.Database;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class MovieContract {
+    public static final String CONTENT_AUTHORITY = "nanodegree.florinbacu.com.newmovies";
+    public static final Uri BASE_CONTENT_URI=Uri.parse("content://"+CONTENT_AUTHORITY);
+    public static final String PATH ="Movies"
     private MovieContract()
     {
 

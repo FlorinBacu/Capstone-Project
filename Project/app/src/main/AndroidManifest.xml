@@ -30,6 +30,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nanodegree.florinbacu.com.newmovies.ItemListActivity" />
         </activity>
+        <provider
+            android:authorities=".Database.MovieProvider"
+            android:name="nanodegree.florinbacu.com.newmovies.Database.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
