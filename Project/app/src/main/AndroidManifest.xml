@@ -3,6 +3,7 @@
     package="nanodegree.florinbacu.com.newmovies">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="nanodegree.florinbacu.com.newmovies"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,10 +31,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nanodegree.florinbacu.com.newmovies.ItemListActivity" />
         </activity>
-        <provider
-            android:authorities=".Database.MovieProvider"
-            android:name="nanodegree.florinbacu.com.newmovies.Database.MovieProvider"
-            android:exported="false"/>
+      <provider
+          android:authorities="nanodegree.florinbacu.com.newmovies"
+          android:name=".Database.MovieProvider"
+          android:exported="false"/>
     </application>
 
 </manifest>

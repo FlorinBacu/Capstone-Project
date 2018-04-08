@@ -1,11 +1,15 @@
 package nanodegree.florinbacu.com.newmovies;
 
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,10 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import nanodegree.florinbacu.com.newmovies.Database.MovieContract;
 import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
 
 import java.util.ArrayList;
@@ -43,6 +47,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+
     private boolean mTwoPane;
     AdView mAdView;
     protected boolean isOnline() {
@@ -57,6 +62,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final ContentResolver resolver = getContentResolver();
         setContentView(R.layout.activity_item_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -67,7 +73,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "data save in database", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -85,6 +91,67 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
     else
     {
         Toast.makeText(this,"No internet available",Toast.LENGTH_LONG).show();
+
+
+        new AsyncTask<Cursor, Void,List<ContentLoader.ItemRSS>>() {
+
+
+            private Context context;
+
+            public AsyncTask setContext(Context context)
+            {
+                this.context=context;
+                return this;
+            }
+            @Override
+            protected List<ContentLoader.ItemRSS> doInBackground(Cursor ...cursors) {
+                Cursor cursor = resolver.query(MovieContract.CONTENT_URI, null, null, null, null);
+                ArrayList<ContentLoader.ItemRSS> list=new ArrayList<ContentLoader.ItemRSS>();
+                if(cursor.getCount()==0)
+                {
+
+                }
+                else
+                {
+
+                    if(ContentLoader.ITEMS.size()==0)
+                    {
+                    int index_title=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_TITLE);
+                    int index_detail=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_DETAIL);
+                    int index_id=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID);
+                    String row_title,row_detail,row_id;
+
+                        while(cursor.moveToNext()) {
+                            row_detail=cursor.getColumnName(index_detail);
+                            row_title=cursor.getColumnName(index_title);
+                            row_id=cursor.getColumnName(index_id);
+                            list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail));
+                            cursor.moveToNext();
+                        }
+                        Toast.makeText(context,"data loaded from database",Toast.LENGTH_LONG).show();
+                    }
+
+
+
+                }
+                return list;
+            }
+
+            @Override
+            protected void onPostExecute(List<ContentLoader.ItemRSS> listout) {
+                if(listout.size()==0) {
+                    Toast.makeText(context, "database is empty", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                super.onPostExecute(listout);
+                ContentLoader.ITEMS=listout;
+                ContentLoader.COUNT=listout.size();
+                View recyclerView =findViewById(R.id.item_list);
+                assert recyclerView != null;
+                setupRecyclerView((RecyclerView) recyclerView);
+            }
+        }.setContext(this).execute(new Cursor[]{null});
+
     }
         MobileAds.initialize(this,    "ca-app-pub-3940256099942544~3347511713");
         mAdView = findViewById(R.id.adView);
