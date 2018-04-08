@@ -62,7 +62,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private static HashMap<String,String> aquaired_link=new HashMap<String,String>();
+   public static HashMap<String,String> aquaired_link=new HashMap<String,String>();
     public static boolean first_load=false;
     private boolean mTwoPane;
     AdView mAdView;
