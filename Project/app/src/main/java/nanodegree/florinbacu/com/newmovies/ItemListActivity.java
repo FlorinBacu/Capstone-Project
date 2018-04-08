@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +29,20 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 import nanodegree.florinbacu.com.newmovies.Database.MovieContract;
 import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * An activity representing a list of Items. This activity
@@ -133,13 +143,15 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     int index_title=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_TITLE);
                     int index_detail=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_DETAIL);
                     int index_id=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID);
-                    String row_title,row_detail,row_id;
+                    int index_link=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_LINK);
+                    String row_title,row_detail,row_id,row_link;
 
                         while(cursor.moveToNext()) {
                             row_detail=cursor.getColumnName(index_detail);
                             row_title=cursor.getColumnName(index_title);
                             row_id=cursor.getColumnName(index_id);
-                            list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail));
+                            row_link=cursor.getColumnName(index_link);
+                            list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail, row_link));
                             cursor.moveToNext();
                         }
 
@@ -249,11 +261,52 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     .inflate(R.layout.item_list_content, parent, false);
             return new ViewHolder(view);
         }
-
+        private static Semaphore sema=new Semaphore(5);
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
 
             holder.mContentView.setText(mValues.get(position).title.split("-")[1]);
+
+            new AsyncTask<String,Void,String>() {
+                @Override
+                protected void onPostExecute(String imageURL) {
+                    holder.mImageView.setImageURI(Uri.parse(imageURL));
+                    super.onPostExecute(imageURL);
+
+                }
+
+                @Override
+                protected String doInBackground(String... urls) {
+
+
+                    Document doc = null;
+                    try {
+                        doc = Jsoup.connect(urls[0]).get();
+
+                    Elements scripts = doc.getElementsByTag("script");
+                        int i;
+                        for (i = 0; i < scripts.size(); i++) {
+                            if (scripts.get(i).attr("type").equals("application/ld+json")) {
+                                String json = scripts.get(i).html().replaceAll("(\\n| |\\t)", "");
+                                JSONObject obj = new JSONObject(json);
+                                JSONArray array = obj.getJSONArray("workPresented");
+                                String imageURL = array.getJSONObject(0).getString("image");
+
+                                return imageURL;
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    return null;
+                }
+
+            }.execute(mValues.get(position).link);
+
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -267,11 +320,12 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         class ViewHolder extends RecyclerView.ViewHolder {
 
             final TextView mContentView;
-
+            final ImageView mImageView;
             ViewHolder(View view) {
                 super(view);
 
                 mContentView = (TextView) view.findViewById(R.id.content);
+                mImageView=(ImageView)view.findViewById(R.id.imageList);
             }
         }
     }

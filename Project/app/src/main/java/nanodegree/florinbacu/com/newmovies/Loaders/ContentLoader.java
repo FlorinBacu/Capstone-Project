@@ -2,9 +2,6 @@ package nanodegree.florinbacu.com.newmovies.Loaders;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.Xml;
-import android.view.View;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -12,20 +9,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-
-import nanodegree.florinbacu.com.newmovies.ItemListActivity;
-import nanodegree.florinbacu.com.newmovies.R;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -60,9 +49,7 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
         ITEM_MAP.put(item.id, item);
     }
 
-    private static ItemRSS createDummyItem(int position) {
-        return new ItemRSS(String.valueOf(position), "Item " + position, makeDetails(position));
-    }
+
 
     private static String makeDetails(int position) {
         StringBuilder builder = new StringBuilder();
@@ -129,6 +116,7 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
         int eventType=pullParser.getEventType();
         String name;
         String title = null;
+        String link=null;
         String description=null;
         ItemRSS item = null;
 
@@ -156,11 +144,18 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
                         }
                         description = pullParser.getText();
                     }
+
+                    break;
+                case "link":
+                    if(link==null) {
+                        pullParser.next();
+                        link = pullParser.getText();
+                    }
                     break;
             }
             eventType=pullParser.next();
         }
-        item=new ItemRSS(String.valueOf(listLoaded.size()),title,description);
+        item=new ItemRSS(String.valueOf(listLoaded.size()),title,description,link);
 
         return  item;
     }
@@ -174,11 +169,12 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
         public final String id;
         public final String title;
         public final String details;
-
-        public ItemRSS(String id, String title, String description) {
+        public final String link;
+        public ItemRSS(String id, String title, String description, String link) {
             this.id = id;
             this.title = title;
             this.details = description;
+            this.link=link;
         }
 
         @Override
