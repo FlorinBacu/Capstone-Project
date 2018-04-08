@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.media.Image;
+import android.media.ImageReader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -42,6 +44,7 @@ import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -59,6 +62,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+    private static HashMap<String,String> aquaired_link=new HashMap<String,String>();
     public static boolean first_load=false;
     private boolean mTwoPane;
     AdView mAdView;
@@ -267,52 +271,56 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         public void onBindViewHolder(final ViewHolder holder, final int position) {
 
             holder.mContentView.setText(mValues.get(position).title.split("-")[1]);
+            if(ItemListActivity.aquaired_link.get(mValues.get(position).link)==null) {
+                new AsyncTask<String, Void, String>() {
+                    @Override
+                    protected void onPostExecute(String imageURL) {
+                        Picasso.with(mParentActivity).load(imageURL).into(holder.mImageView);
 
-            new AsyncTask<String,Void,String>() {
-                @Override
-                protected void onPostExecute(String imageURL) {
-                    Picasso.with(mParentActivity).load(imageURL).into(holder.mImageView);
+                        super.onPostExecute(imageURL);
 
-                    super.onPostExecute(imageURL);
-
-                }
-
-                @Override
-                protected String doInBackground(String... urls) {
-
-
-
-                    try {
-                        sema.acquire();
-                        Document doc = Jsoup.connect(urls[0]).get();
-
-                    Elements scripts = doc.getElementsByTag("script");
-                        int i;
-                        for (i = 0; i < scripts.size(); i++) {
-                            if (scripts.get(i).attr("type").equals("application/ld+json")) {
-                                String json = scripts.get(i).html().replaceAll("(\\n| |\\t)", "");
-                                JSONObject obj = new JSONObject(json);
-                                JSONArray array = obj.getJSONArray("workPresented");
-                                String imageURL = array.getJSONObject(0).getString("image");
-                                sema.release();
-                                return imageURL;
-                            }
-                        }
-
-
-                    sema.release();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
-                    return null;
-                }
 
-            }.execute(mValues.get(position).link);
+                    @Override
+                    protected String doInBackground(String... urls) {
 
+
+                        try {
+                            sema.acquire();
+                            Document doc = Jsoup.connect(urls[0]).get();
+
+                            Elements scripts = doc.getElementsByTag("script");
+                            int i;
+                            for (i = 0; i < scripts.size(); i++) {
+                                if (scripts.get(i).attr("type").equals("application/ld+json")) {
+                                    String json = scripts.get(i).html().replaceAll("(\\n| |\\t)", "");
+                                    JSONObject obj = new JSONObject(json);
+                                    JSONArray array = obj.getJSONArray("workPresented");
+                                    String imageURL = array.getJSONObject(0).getString("image");
+                                    sema.release();
+                                    ItemListActivity.aquaired_link.put(urls[0],imageURL);
+                                    return imageURL;
+                                }
+                            }
+
+
+                            sema.release();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                }.execute(mValues.get(position).link);
+            }
+            else
+            {
+                Picasso.with(mParentActivity).load((String) ItemListActivity.aquaired_link.get(mValues.get(position).link)).into(holder.mImageView);
+            }
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -327,6 +335,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
             final TextView mContentView;
             final ImageView mImageView;
+
             ViewHolder(View view) {
                 super(view);
 
