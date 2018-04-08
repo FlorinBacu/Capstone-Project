@@ -142,7 +142,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                             list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail));
                             cursor.moveToNext();
                         }
-                    
+
                         return list;
                     }
                 else
@@ -252,8 +252,8 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).title);
+
+            holder.mContentView.setText(mValues.get(position).title.split("-")[1]);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -265,12 +265,12 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
+
             final TextView mContentView;
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
+
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
         }
