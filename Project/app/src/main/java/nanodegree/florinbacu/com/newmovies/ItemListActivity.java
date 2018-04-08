@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -270,7 +271,8 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             new AsyncTask<String,Void,String>() {
                 @Override
                 protected void onPostExecute(String imageURL) {
-                    holder.mImageView.setImageURI(Uri.parse(imageURL));
+                    Picasso.with(mParentActivity).load(imageURL).into(holder.mImageView);
+
                     super.onPostExecute(imageURL);
 
                 }
