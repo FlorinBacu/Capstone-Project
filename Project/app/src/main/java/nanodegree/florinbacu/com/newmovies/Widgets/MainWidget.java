@@ -3,10 +3,14 @@ package nanodegree.florinbacu.com.newmovies.Widgets;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.net.Uri;
 import android.widget.RemoteViews;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import nanodegree.florinbacu.com.newmovies.ItemListActivity;
 import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
 import nanodegree.florinbacu.com.newmovies.R;
 
@@ -26,7 +30,8 @@ public class MainWidget extends AppWidgetProvider {
         {
         for(i=0;i<Math.min(5,list.size());i++) {
             itemView=new RemoteViews(context.getPackageName(),R.layout.item_list_content);
-            itemView.setTextViewText(R.id.content,list.get(i).title);
+            itemView.setTextViewText(R.id.content,list.get(i).title.split("-")[1]);
+        itemView.setImageViewUri(R.id.imageList, Uri.parse(ItemListActivity.aquaired_link.get(list.get(i).link)));
             views.addView(R.id.content_widget_items, itemView);
         }
         }
