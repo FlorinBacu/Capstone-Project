@@ -19,15 +19,18 @@ public class MainWidget extends AppWidgetProvider {
                                 int appWidgetId) {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main_widget);
-        /*views.removeAllViews(R.id.content_widget_items);
+        views.removeAllViews(R.id.content_widget_items);
         RemoteViews itemView;
         int i;
+        if(list!=null)
+        {
         for(i=0;i<Math.min(5,list.size());i++) {
             itemView=new RemoteViews(context.getPackageName(),R.layout.item_list_content);
             itemView.setTextViewText(R.id.content,list.get(i).title);
             views.addView(R.id.content_widget_items, itemView);
         }
-        // Instruct the widget manager to update the widget*/
+        }
+        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
     static List<ContentLoader.ItemRSS> list;

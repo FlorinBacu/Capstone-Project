@@ -216,11 +216,11 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         View recyclerView =findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-       /* AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+       AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MainWidget.class));
         RemoteViews mainWidget = new RemoteViews(this.getPackageName(),R.layout.main_widget);
         MainWidget.feedList(ContentLoader.ITEMS);
-        appWidgetManager.updateAppWidget(appWidgetIds,mainWidget);*/
+        appWidgetManager.updateAppWidget(appWidgetIds,mainWidget);
 
 
     }
