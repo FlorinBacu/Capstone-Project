@@ -1,6 +1,8 @@
 package nanodegree.florinbacu.com.newmovies;
 
 import android.app.LoaderManager;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ import org.jsoup.select.Elements;
 
 import nanodegree.florinbacu.com.newmovies.Database.MovieContract;
 import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
+import nanodegree.florinbacu.com.newmovies.Widgets.MainWidget;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -212,6 +216,12 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         View recyclerView =findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+       /* AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MainWidget.class));
+        RemoteViews mainWidget = new RemoteViews(this.getPackageName(),R.layout.main_widget);
+        MainWidget.feedList(ContentLoader.ITEMS);
+        appWidgetManager.updateAppWidget(appWidgetIds,mainWidget);*/
+
 
     }
 

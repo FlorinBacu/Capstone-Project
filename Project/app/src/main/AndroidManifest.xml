@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nanodegree.florinbacu.com.newmovies">
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="nanodegree.florinbacu.com.newmovies"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="nanodegree.florinbacu.com.newmovies" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".ItemListActivity"
             android:label="@string/app_name"
@@ -31,10 +32,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nanodegree.florinbacu.com.newmovies.ItemListActivity" />
         </activity>
-      <provider
-          android:authorities="nanodegree.florinbacu.com.newmovies"
-          android:name=".Database.MovieProvider"
-          android:exported="false"/>
+
+        <provider
+            android:name=".Database.MovieProvider"
+            android:authorities="nanodegree.florinbacu.com.newmovies"
+            android:exported="false" />
+
+        <receiver android:name=".Widgets.MainWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/main_widget_info" />
+        </receiver>
+        <receiver android:name=".Widgets.DetailWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/detail_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
