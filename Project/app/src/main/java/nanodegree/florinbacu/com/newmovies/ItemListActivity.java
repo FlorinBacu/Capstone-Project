@@ -108,6 +108,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     cvs[i]=cv;
                 }
                 resolver.bulkInsert(MovieContract.CONTENT_URI,cvs);
+
                 Snackbar.make(view, "data saved in database", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }

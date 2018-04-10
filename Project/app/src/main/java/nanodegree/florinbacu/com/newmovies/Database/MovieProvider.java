@@ -39,10 +39,12 @@ public class MovieProvider extends ContentProvider {
                     }
                 }
             db.setTransactionSuccessful();
+
                 if(rowsInserted>0)
                 {
                     getContext().getContentResolver().notifyChange(uri,null);
                 }
+                db.endTransaction();
                 return rowsInserted;
                 default:
                     return super.bulkInsert(uri,values);
@@ -64,9 +66,11 @@ public class MovieProvider extends ContentProvider {
        switch (sUriMatcher.match(uri))
        {
            case CODE_MOVIES:
-               cursor=movieDbHelper.getReadableDatabase().query(
+               SQLiteDatabase db = movieDbHelper.getReadableDatabase();
+               cursor=db.query(
                        MovieContract.MovieEntry.TABLE_NAME,
                        projection,selection,selectionArgs,null,null,sortOrder);
+               db.endTransaction();
                break;
                default:
                    throw new UnsupportedOperationException("Unknown uri:"+uri);
@@ -97,6 +101,7 @@ public class MovieProvider extends ContentProvider {
                         MovieContract.MovieEntry.TABLE_NAME,
                         selection,
                         selectionArgs);
+
                 break;
         }
         if (numRowsDeleted != 0) {
