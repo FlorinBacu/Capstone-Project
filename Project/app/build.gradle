@@ -14,11 +14,27 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
         }
     }
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    signingConfigs {
+        release {
+            keyAlias 'capstone'
+            keyPassword 'capstone'
+            storeFile file("capstone.jks")
+            storePassword 'capstone'
+        }
+    }
+
+
+
+
 }
 
 dependencies {
