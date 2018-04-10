@@ -2,7 +2,9 @@ package nanodegree.florinbacu.com.newmovies.Loaders;
 
 import android.appwidget.AppWidgetManager;
 import android.content.AsyncTaskLoader;
+import android.content.ComponentName;
 import android.content.Context;
+import android.widget.RemoteViews;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -16,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import nanodegree.florinbacu.com.newmovies.R;
+import nanodegree.florinbacu.com.newmovies.Widgets.MainWidget;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -107,7 +112,12 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
     public void deliverResult(List<ItemRSS> items) {
         super.deliverResult(items);
         ContentLoader.ITEMS = items;
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, MainWidget.class));
+        RemoteViews mainWidget = new RemoteViews(context.getPackageName(), R.layout.main_widget);
+        MainWidget.feedList(ContentLoader.ITEMS);
 
+        appWidgetManager.updateAppWidget(appWidgetIds, mainWidget);
 
     }
 
