@@ -11,6 +11,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -208,11 +209,14 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MainWidget.class));
-        RemoteViews mainWidget = new RemoteViews(this.getPackageName(), R.layout.main_widget);
+         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MainWidget.class));
+         RemoteViews mainWidget = new RemoteViews(this.getPackageName(), R.layout.main_widget);
         MainWidget.feedList(ContentLoader.ITEMS);
-        appWidgetManager.updateAppWidget(appWidgetIds, mainWidget);
+
+                    appWidgetManager.updateAppWidget(appWidgetIds, mainWidget);
+
+
 
 
     }

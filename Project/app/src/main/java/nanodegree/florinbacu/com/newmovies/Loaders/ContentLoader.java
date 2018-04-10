@@ -107,7 +107,7 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
     public void deliverResult(List<ItemRSS> items) {
         super.deliverResult(items);
         ContentLoader.ITEMS = items;
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+
 
     }
 

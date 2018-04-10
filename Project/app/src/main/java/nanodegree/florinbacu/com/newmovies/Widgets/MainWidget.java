@@ -26,7 +26,7 @@ public class MainWidget extends AppWidgetProvider {
         int i;
         if (list != null) {
             for (i = 0; i < Math.min(5, list.size()); i++) {
-                itemView = new RemoteViews(context.getPackageName(), R.layout.item_list_content);
+                itemView = new RemoteViews(context.getPackageName(), R.layout.item_list_content_widget);
                 itemView.setTextViewText(R.id.content, list.get(i).title.split("-")[1]);
                 itemView.setImageViewUri(R.id.imageList, Uri.parse(ItemListActivity.aquaired_link.get(list.get(i).link)));
                 views.addView(R.id.content_widget_items, itemView);
@@ -36,7 +36,7 @@ public class MainWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    static List<ContentLoader.ItemRSS> list;
+    public static List<ContentLoader.ItemRSS> list;
 
     public static void feedList(List<ContentLoader.ItemRSS> list) {
         if (list.size() > 0) {
