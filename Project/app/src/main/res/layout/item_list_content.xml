@@ -27,7 +27,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"
-            android:contentDescription="image list item"/>
+            android:contentDescription="@string/image_list_item"/>
 
         <TextView
             android:id="@+id/content"
