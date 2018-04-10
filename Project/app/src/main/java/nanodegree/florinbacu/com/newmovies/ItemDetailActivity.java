@@ -3,13 +3,12 @@ package nanodegree.florinbacu.com.newmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
 
@@ -32,15 +31,15 @@ public class ItemDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(Intent.ACTION_SEND);
+                Intent intent = new Intent(Intent.ACTION_SEND);
                 String arg_id = getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID);
-                ContentLoader.ItemRSS item=ContentLoader.ITEMS.get(Integer.parseInt(arg_id));
+                ContentLoader.ItemRSS item = ContentLoader.ITEMS.get(Integer.parseInt(arg_id));
                 intent.setType("text/html");
-                String shareBody=item.details;
-                String shareSubject=item.title;
-                intent.putExtra(Intent.EXTRA_SUBJECT,shareSubject);
-                intent.putExtra(Intent.EXTRA_TEXT,shareBody);
-                startActivity(Intent.createChooser(intent,"Share using"));
+                String shareBody = item.details;
+                String shareSubject = item.title;
+                intent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+                intent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(intent, "Share using"));
             }
         });
 

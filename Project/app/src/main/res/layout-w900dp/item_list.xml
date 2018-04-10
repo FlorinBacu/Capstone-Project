@@ -14,7 +14,9 @@
         android:divider="?android:attr/dividerHorizontal"
         android:orientation="horizontal"
         android:showDividers="middle"
-        tools:context=".ItemListActivity">
+        tools:context=".ItemListActivity"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <!--
         This layout is a two-pane layout for the Items
@@ -34,7 +36,9 @@
             android:layout_marginRight="16dp"
             app:layoutManager="LinearLayoutManager"
             tools:context="nanodegree.florinbacu.com.newmovies.ItemListActivity"
-            tools:listitem="@layout/item_list_content" />
+            tools:listitem="@layout/item_list_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
 
         <FrameLayout
             android:id="@+id/item_detail_container"

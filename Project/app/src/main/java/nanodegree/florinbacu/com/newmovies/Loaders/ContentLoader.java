@@ -2,9 +2,7 @@ package nanodegree.florinbacu.com.newmovies.Loaders;
 
 import android.appwidget.AppWidgetManager;
 import android.content.AsyncTaskLoader;
-import android.content.ComponentName;
 import android.content.Context;
-import android.widget.RemoteViews;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,9 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import nanodegree.florinbacu.com.newmovies.R;
-import nanodegree.florinbacu.com.newmovies.Widgets.MainWidget;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -41,20 +36,20 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
      */
     public static final Map<String, ItemRSS> ITEM_MAP = new HashMap<String, ItemRSS>();
 
-    public static  int COUNT;
+    public static int COUNT;
 
 
     Context context;
+
     public ContentLoader(Context context) {
         super(context);
-        this.context=context;
+        this.context = context;
     }
 
     private static void addItem(ItemRSS item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
     }
-
 
 
     private static String makeDetails(int position) {
@@ -65,7 +60,8 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
         }
         return builder.toString();
     }
-ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
+
+    ArrayList<ItemRSS> listLoaded = new ArrayList<ItemRSS>();
 
     @Override
     protected void onStartLoading() {
@@ -77,26 +73,24 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
     public List<ItemRSS> loadInBackground() {
         String rss = null;
         ItemRSS item;
-        URL url= null;
+        URL url = null;
 
         HttpURLConnection urlConnection = null;
         try {
             url = new URL("https://www.moma.org/feeds/events_films_30_days.rss");
-            urlConnection = (HttpURLConnection)url.openConnection() ;
+            urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = urlConnection.getInputStream();
-            XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser pullParser = factory.newPullParser();
-            pullParser.setInput(in,null);
+            pullParser.setInput(in, null);
             int eventType = pullParser.getEventType();
-            while(eventType!=XmlPullParser.END_DOCUMENT)
-            {
-                if(pullParser.getName()!=null && pullParser.getName().equals("item"))
-                {
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if (pullParser.getName() != null && pullParser.getName().equals("item")) {
 
-                    item=processItem(pullParser);
+                    item = processItem(pullParser);
                     listLoaded.add(item);
                 }
-                eventType=pullParser.next();
+                eventType = pullParser.next();
             }
 
 
@@ -110,10 +104,9 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
     }
 
     @Override
-    public void deliverResult(List<ItemRSS> items)
-    {
+    public void deliverResult(List<ItemRSS> items) {
         super.deliverResult(items);
-        ContentLoader.ITEMS=items;
+        ContentLoader.ITEMS = items;
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
     }
@@ -121,24 +114,22 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
     private ItemRSS processItem(XmlPullParser pullParser) throws XmlPullParserException, IOException {
 
 
-        int eventType=pullParser.getEventType();
+        int eventType = pullParser.getEventType();
         String name;
         String title = null;
-        String link=null;
-        String description=null;
+        String link = null;
+        String description = null;
         ItemRSS item = null;
 
-        while(pullParser.getName()!=null && !pullParser.getName().equals("item") || eventType!=XmlPullParser.END_TAG)
-        {
-            name=pullParser.getName();
-            if(name==null) {
+        while (pullParser.getName() != null && !pullParser.getName().equals("item") || eventType != XmlPullParser.END_TAG) {
+            name = pullParser.getName();
+            if (name == null) {
                 eventType = pullParser.next();
                 continue;
             }
-            switch (name)
-            {
+            switch (name) {
                 case "title":
-                    if(title==null) {
+                    if (title == null) {
                         while (eventType != XmlPullParser.CDSECT) {
                             eventType = pullParser.nextToken();
                         }
@@ -146,7 +137,7 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
                     }
                     break;
                 case "description":
-                    if(description==null) {
+                    if (description == null) {
                         while (eventType != XmlPullParser.CDSECT) {
                             eventType = pullParser.nextToken();
                         }
@@ -155,19 +146,18 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
 
                     break;
                 case "link":
-                    if(link==null) {
+                    if (link == null) {
                         pullParser.next();
                         link = pullParser.getText();
                     }
                     break;
             }
-            eventType=pullParser.next();
+            eventType = pullParser.next();
         }
-        item=new ItemRSS(String.valueOf(listLoaded.size()),title,description,link);
+        item = new ItemRSS(String.valueOf(listLoaded.size()), title, description, link);
 
-        return  item;
+        return item;
     }
-
 
 
     /**
@@ -178,11 +168,12 @@ ArrayList<ItemRSS> listLoaded=new ArrayList<ItemRSS>();
         public final String title;
         public final String details;
         public final String link;
+
         public ItemRSS(String id, String title, String description, String link) {
             this.id = id;
             this.title = title;
             this.details = description;
-            this.link=link;
+            this.link = link;
         }
 
         @Override

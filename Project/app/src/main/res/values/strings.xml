@@ -3,4 +3,11 @@
     <string name="title_item_detail">Item Detail</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="date_detail">Date</string>
+    <string name="title_main_widget">First 5 movies</string>
+    <string name="widget_detail_image">widget detail image</string>
+    <string name="save_db_message">data saved in database</string>
+    <string name="no_net_message">No internet available</string>
+    <string name="empty_db_message">database is empty</string>
+    <string name="load_db_message">data loaded from database</string>
 </resources>

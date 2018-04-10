@@ -9,19 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.media.Image;
-import android.media.ImageReader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,15 +39,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import nanodegree.florinbacu.com.newmovies.Database.MovieContract;
-import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
-import nanodegree.florinbacu.com.newmovies.Widgets.MainWidget;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+
+import nanodegree.florinbacu.com.newmovies.Database.MovieContract;
+import nanodegree.florinbacu.com.newmovies.Loaders.ContentLoader;
+import nanodegree.florinbacu.com.newmovies.Widgets.MainWidget;
 
 /**
  * An activity representing a list of Items. This activity
@@ -60,18 +57,19 @@ import java.util.concurrent.Semaphore;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ContentLoader.ItemRSS>>{
+public class ItemListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ContentLoader.ItemRSS>> {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-   public static HashMap<String,String> aquaired_link=new HashMap<String,String>();
-    public static boolean first_load=false;
+    public static HashMap<String, String> aquaired_link = new HashMap<String, String>();
+    public static boolean first_load = false;
     private boolean mTwoPane;
     AdView mAdView;
+
     protected boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
             return true;
@@ -79,6 +77,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             return false;
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,23 +92,22 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resolver.delete(MovieContract.CONTENT_URI,null,null);
+                resolver.delete(MovieContract.CONTENT_URI, null, null);
                 int i;
-                int count=ContentLoader.ITEMS.size();
-                ContentValues []cvs=new ContentValues[count];
+                int count = ContentLoader.ITEMS.size();
+                ContentValues[] cvs = new ContentValues[count];
                 ContentValues cv;
-                for(i=0;i<count;i++)
-                {
-                    cv=new ContentValues();
+                for (i = 0; i < count; i++) {
+                    cv = new ContentValues();
 
-                    cv.put(MovieContract.MovieEntry.COLUMN_ID,ContentLoader.ITEMS.get(i).id);
-                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,ContentLoader.ITEMS.get(i).title);
-                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_DETAIL,ContentLoader.ITEMS.get(i).details);
-                    cvs[i]=cv;
+                    cv.put(MovieContract.MovieEntry.COLUMN_ID, ContentLoader.ITEMS.get(i).id);
+                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE, ContentLoader.ITEMS.get(i).title);
+                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_DETAIL, ContentLoader.ITEMS.get(i).details);
+                    cvs[i] = cv;
                 }
-                resolver.bulkInsert(MovieContract.CONTENT_URI,cvs);
+                resolver.bulkInsert(MovieContract.CONTENT_URI, cvs);
 
-                Snackbar.make(view, "data saved in database", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getString(R.string.save_db_message), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -121,81 +119,74 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-    if(isOnline()) {
-        getLoaderManager().initLoader(0, null, this);
-    }
-    else
-    {
-        Toast.makeText(this,"No internet available",Toast.LENGTH_LONG).show();
+        if (isOnline()) {
+            getLoaderManager().initLoader(0, null, this);
+        } else {
+            Toast.makeText(this, getString(R.string.no_net_message), Toast.LENGTH_LONG).show();
 
 
-        new AsyncTask<Cursor, Void,List<ContentLoader.ItemRSS>>() {
+            new AsyncTask<Cursor, Void, List<ContentLoader.ItemRSS>>() {
 
 
-            private Context context;
+                private Context context;
 
-            public AsyncTask setContext(Context context)
-            {
-                this.context=context;
-                return this;
-            }
-            @Override
-            protected List<ContentLoader.ItemRSS> doInBackground(Cursor ...cursors) {
+                public AsyncTask setContext(Context context) {
+                    this.context = context;
+                    return this;
+                }
+
+                @Override
+                protected List<ContentLoader.ItemRSS> doInBackground(Cursor... cursors) {
 
 
-                ArrayList<ContentLoader.ItemRSS> list=new ArrayList<ContentLoader.ItemRSS>();
-                    if(!first_load)
-                    {
+                    ArrayList<ContentLoader.ItemRSS> list = new ArrayList<ContentLoader.ItemRSS>();
+                    if (!first_load) {
 
-                        first_load=true;
+                        first_load = true;
                         Cursor cursor = resolver.query(MovieContract.CONTENT_URI, null, null, null, null);
 
-                    int index_title=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_TITLE);
-                    int index_detail=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_DETAIL);
-                    int index_id=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID);
-                    int index_link=cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_LINK);
-                    String row_title,row_detail,row_id,row_link;
+                        int index_title = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_TITLE);
+                        int index_detail = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_DETAIL);
+                        int index_id = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID);
+                        int index_link = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_LINK);
+                        String row_title, row_detail, row_id, row_link;
 
-                        while(cursor.moveToNext()) {
-                            row_detail=cursor.getColumnName(index_detail);
-                            row_title=cursor.getColumnName(index_title);
-                            row_id=cursor.getColumnName(index_id);
-                            row_link=cursor.getColumnName(index_link);
-                            list.add(new ContentLoader.ItemRSS(row_id,row_title,row_detail, row_link));
+                        while (cursor.moveToNext()) {
+                            row_detail = cursor.getColumnName(index_detail);
+                            row_title = cursor.getColumnName(index_title);
+                            row_id = cursor.getColumnName(index_id);
+                            row_link = cursor.getColumnName(index_link);
+                            list.add(new ContentLoader.ItemRSS(row_id, row_title, row_detail, row_link));
                             cursor.moveToNext();
                         }
 
                         return list;
-                    }
-                else
-                    {
-                       return ContentLoader.ITEMS;
+                    } else {
+                        return ContentLoader.ITEMS;
                     }
 
 
-
-
-            }
-
-            @Override
-            protected void onPostExecute(List<ContentLoader.ItemRSS> listout) {
-
-                if(listout.size()==0) {
-                    Toast.makeText(context, "database is empty", Toast.LENGTH_LONG).show();
-                    return;
                 }
-                Toast.makeText(context,"data loaded from database",Toast.LENGTH_LONG).show();
-                super.onPostExecute(listout);
-                ContentLoader.ITEMS=listout;
-                ContentLoader.COUNT=listout.size();
-                View recyclerView =findViewById(R.id.item_list);
-                assert recyclerView != null;
-                setupRecyclerView((RecyclerView) recyclerView);
-            }
-        }.setContext(this).execute(new Cursor[]{null});
 
-    }
-        MobileAds.initialize(this,    "ca-app-pub-3940256099942544~3347511713");
+                @Override
+                protected void onPostExecute(List<ContentLoader.ItemRSS> listout) {
+
+                    if (listout.size() == 0) {
+                        Toast.makeText(context, getString(R.string.empty_db_message), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    Toast.makeText(context, getString(R.string.load_db_message), Toast.LENGTH_LONG).show();
+                    super.onPostExecute(listout);
+                    ContentLoader.ITEMS = listout;
+                    ContentLoader.COUNT = listout.size();
+                    View recyclerView = findViewById(R.id.item_list);
+                    assert recyclerView != null;
+                    setupRecyclerView((RecyclerView) recyclerView);
+                }
+            }.setContext(this).execute(new Cursor[]{null});
+
+        }
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -213,20 +204,18 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoadFinished(Loader<List<ContentLoader.ItemRSS>> loader, List<ContentLoader.ItemRSS> data) {
-        ContentLoader.COUNT=ContentLoader.ITEMS.size();
-        View recyclerView =findViewById(R.id.item_list);
+        ContentLoader.COUNT = ContentLoader.ITEMS.size();
+        View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-       AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MainWidget.class));
-        RemoteViews mainWidget = new RemoteViews(this.getPackageName(),R.layout.main_widget);
+        RemoteViews mainWidget = new RemoteViews(this.getPackageName(), R.layout.main_widget);
         MainWidget.feedList(ContentLoader.ITEMS);
-        appWidgetManager.updateAppWidget(appWidgetIds,mainWidget);
+        appWidgetManager.updateAppWidget(appWidgetIds, mainWidget);
 
 
     }
-
-
 
 
     @Override
@@ -277,12 +266,14 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     .inflate(R.layout.item_list_content, parent, false);
             return new ViewHolder(view);
         }
-        private static Semaphore sema=new Semaphore(4);
+
+        private static Semaphore sema = new Semaphore(4);
+
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
 
             holder.mContentView.setText(mValues.get(position).title.split("-")[1]);
-            if(ItemListActivity.aquaired_link.get(mValues.get(position).link)==null) {
+            if (ItemListActivity.aquaired_link.get(mValues.get(position).link) == null) {
                 new AsyncTask<String, Void, String>() {
                     @Override
                     protected void onPostExecute(String imageURL) {
@@ -309,7 +300,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                                     JSONArray array = obj.getJSONArray("workPresented");
                                     String imageURL = array.getJSONObject(0).getString("image");
                                     sema.release();
-                                    ItemListActivity.aquaired_link.put(urls[0],imageURL);
+                                    ItemListActivity.aquaired_link.put(urls[0], imageURL);
                                     return imageURL;
                                 }
                             }
@@ -327,9 +318,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     }
 
                 }.execute(mValues.get(position).link);
-            }
-            else
-            {
+            } else {
                 Picasso.with(mParentActivity).load((String) ItemListActivity.aquaired_link.get(mValues.get(position).link)).into(holder.mImageView);
             }
 
@@ -351,7 +340,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                 super(view);
 
                 mContentView = (TextView) view.findViewById(R.id.content);
-                mImageView=(ImageView)view.findViewById(R.id.imageList);
+                mImageView = (ImageView) view.findViewById(R.id.imageList);
             }
         }
     }

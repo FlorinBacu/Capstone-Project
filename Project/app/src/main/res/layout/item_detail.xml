@@ -11,7 +11,9 @@
         android:id="@+id/image_datail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        android:contentDescription="Image detail"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,14 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Date" />
+            android:text="@string/date_detail" />
 
         <TextView
             android:id="@+id/date_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+           />
     </LinearLayout>
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"

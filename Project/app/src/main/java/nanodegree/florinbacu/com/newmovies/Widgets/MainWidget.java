@@ -6,8 +6,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import nanodegree.florinbacu.com.newmovies.ItemListActivity;
@@ -26,25 +24,26 @@ public class MainWidget extends AppWidgetProvider {
         views.removeAllViews(R.id.content_widget_items);
         RemoteViews itemView;
         int i;
-        if(list!=null)
-        {
-        for(i=0;i<Math.min(5,list.size());i++) {
-            itemView=new RemoteViews(context.getPackageName(),R.layout.item_list_content);
-            itemView.setTextViewText(R.id.content,list.get(i).title.split("-")[1]);
-        itemView.setImageViewUri(R.id.imageList, Uri.parse(ItemListActivity.aquaired_link.get(list.get(i).link)));
-            views.addView(R.id.content_widget_items, itemView);
-        }
+        if (list != null) {
+            for (i = 0; i < Math.min(5, list.size()); i++) {
+                itemView = new RemoteViews(context.getPackageName(), R.layout.item_list_content);
+                itemView.setTextViewText(R.id.content, list.get(i).title.split("-")[1]);
+                itemView.setImageViewUri(R.id.imageList, Uri.parse(ItemListActivity.aquaired_link.get(list.get(i).link)));
+                views.addView(R.id.content_widget_items, itemView);
+            }
         }
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
+
     static List<ContentLoader.ItemRSS> list;
- public static void feedList(List<ContentLoader.ItemRSS> list)
-    {
-        if(list.size()>0) {
+
+    public static void feedList(List<ContentLoader.ItemRSS> list) {
+        if (list.size() > 0) {
             MainWidget.list = list.subList(0, Math.min(4, list.size()));
         }
     }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
