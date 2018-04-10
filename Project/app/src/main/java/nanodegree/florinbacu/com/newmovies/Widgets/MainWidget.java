@@ -40,6 +40,7 @@ public class MainWidget extends AppWidgetProvider {
 
     public static void feedList(List<ContentLoader.ItemRSS> list) {
         if (list.size() > 0) {
+
             MainWidget.list = list.subList(0, Math.min(4, list.size()));
         }
     }
