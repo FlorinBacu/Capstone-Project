@@ -19,6 +19,13 @@
             android:layout_height="wrap_content"
          />
 
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="our location"
+            android:onClick="showLoc"/>
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="match_parent"

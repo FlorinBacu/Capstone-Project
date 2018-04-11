@@ -12,4 +12,5 @@
     <string name="load_db_message">data loaded from database</string>
     <string name="image_detail">Image detail</string>
     <string name="image_list_item">image list item</string>
+    <string name="title_activity_where">Our location</string>
 </resources>

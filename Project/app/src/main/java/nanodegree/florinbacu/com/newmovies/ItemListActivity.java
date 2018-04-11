@@ -222,6 +222,11 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
     }
 
+    public void showLoc(View view) {
+        Intent intent=new Intent(view.getContext(),WhereActivity.class);
+        startActivity(intent);
+    }
+
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
