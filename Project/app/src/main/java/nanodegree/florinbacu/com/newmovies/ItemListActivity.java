@@ -182,12 +182,19 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                         return;
                     }
                     Toast.makeText(context, getString(R.string.load_db_message), Toast.LENGTH_LONG).show();
-                    super.onPostExecute(listout);
+
                     ContentLoader.ITEMS = listout;
                     ContentLoader.COUNT = listout.size();
                     View recyclerView = findViewById(R.id.item_list);
                     assert recyclerView != null;
                     setupRecyclerView((RecyclerView) recyclerView);
+
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, MainWidget.class));
+                    RemoteViews mainWidget = new RemoteViews(context.getPackageName(), R.layout.main_widget);
+                    MainWidget.feedList(ContentLoader.ITEMS);
+                    appWidgetManager.updateAppWidget(appWidgetIds, mainWidget);
+                    super.onPostExecute(listout);
                 }
             }.setContext(this).execute(new Cursor[]{null});
 
@@ -214,10 +221,6 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-
-
-
-
 
     }
 

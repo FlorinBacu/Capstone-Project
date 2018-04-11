@@ -116,7 +116,6 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, MainWidget.class));
         RemoteViews mainWidget = new RemoteViews(context.getPackageName(), R.layout.main_widget);
         MainWidget.feedList(ContentLoader.ITEMS);
-
         appWidgetManager.updateAppWidget(appWidgetIds, mainWidget);
 
     }
