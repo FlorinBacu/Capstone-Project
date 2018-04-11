@@ -20,6 +20,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +68,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      */
     public static HashMap<String, String> aquaired_link = new HashMap<String, String>();
     public static boolean first_load = false;
+    public static boolean isConnected;
     private boolean mTwoPane;
     AdView mAdView;
 
@@ -104,6 +107,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                     cv.put(MovieContract.MovieEntry.COLUMN_ID, ContentLoader.ITEMS.get(i).id);
                     cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE, ContentLoader.ITEMS.get(i).title);
                     cv.put(MovieContract.MovieEntry.COLUMN_NAME_DETAIL, ContentLoader.ITEMS.get(i).details);
+                    cv.put(MovieContract.MovieEntry.COLUMN_NAME_LINK, ContentLoader.ITEMS.get(i).link);
                     cvs[i] = cv;
                 }
                 resolver.bulkInsert(MovieContract.CONTENT_URI, cvs);
@@ -120,7 +124,8 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        if (isOnline()) {
+        isConnected=isOnline();
+        if (isConnected) {
             getLoaderManager().initLoader(0, null, this);
         } else {
             Toast.makeText(this, getString(R.string.no_net_message), Toast.LENGTH_LONG).show();
@@ -275,7 +280,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-
+if(mValues.get(position).title.split("-").length>1)
             holder.mContentView.setText(mValues.get(position).title.split("-")[1]);
             if (ItemListActivity.aquaired_link.get(mValues.get(position).link) == null) {
                 new AsyncTask<String, Void, String>() {
@@ -292,30 +297,41 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
 
                         try {
-                            sema.acquire();
-                            Document doc = Jsoup.connect(urls[0]).get();
+                            if(ItemListActivity.isConnected) {
+                                sema.acquire();
+                                Document doc = Jsoup.connect(urls[0]).get();
 
-                            Elements scripts = doc.getElementsByTag("script");
-                            int i;
-                            for (i = 0; i < scripts.size(); i++) {
-                                if (scripts.get(i).attr("type").equals("application/ld+json")) {
-                                    String json = scripts.get(i).html().replaceAll("(\\n| |\\t)", "");
-                                    JSONObject obj = new JSONObject(json);
-                                    JSONArray array = obj.getJSONArray("workPresented");
-                                    String imageURL = array.getJSONObject(0).getString("image");
-                                    sema.release();
-                                    ItemListActivity.aquaired_link.put(urls[0], imageURL);
-                                    return imageURL;
+                                Elements scripts = doc.getElementsByTag("script");
+                                int i;
+                                for (i = 0; i < scripts.size(); i++) {
+                                    if (scripts.get(i).attr("type").equals("application/ld+json")) {
+                                        String json = scripts.get(i).html().replaceAll("(\\n| |\\t)", "");
+                                        JSONObject obj = new JSONObject(json);
+                                        JSONArray array = obj.getJSONArray("workPresented");
+                                        String imageURL = array.getJSONObject(0).getString("image");
+                                        sema.release();
+                                        ItemListActivity.aquaired_link.put(urls[0], imageURL);
+                                        return imageURL;
+                                    }
                                 }
+
+
+                                sema.release();
                             }
+                            else
+                            {
+                                cancel(true);
+                            }
+                        } catch (MalformedURLException e)
+                        {
 
-
-                            sema.release();
                         } catch (IOException e) {
+
                             e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
+
                             e.printStackTrace();
                         }
                         return null;

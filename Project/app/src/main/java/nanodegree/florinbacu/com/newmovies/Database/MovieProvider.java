@@ -65,6 +65,7 @@ public class MovieProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case CODE_MOVIES:
                 SQLiteDatabase db = movieDbHelper.getReadableDatabase();
+                db.beginTransaction();
                 cursor = db.query(
                         MovieContract.MovieEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null, null, sortOrder);
