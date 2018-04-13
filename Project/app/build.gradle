@@ -14,7 +14,7 @@ android {
         release {
             keyAlias 'capstone'
             keyPassword 'capstone'
-            storeFile file("capstone.jks")
+            storeFile file("../../capstone.jks")
             storePassword 'capstone'
         }
         buildTypes {

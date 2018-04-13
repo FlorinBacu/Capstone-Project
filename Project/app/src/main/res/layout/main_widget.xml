@@ -10,13 +10,14 @@
             android:text="@string/title_main_widget"
             android:textColor="#000" />
 
-        <LinearLayout
+        <GridView
             android:id="@+id/content_widget_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:numColumns="1">
 
-        </LinearLayout>
+        </GridView>
 
 
 </LinearLayout>

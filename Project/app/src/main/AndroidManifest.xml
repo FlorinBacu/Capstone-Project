@@ -79,6 +79,9 @@
         <activity
             android:name=".WhereActivity"
             android:label="@string/title_activity_where"></activity>
+        <service
+            android:name=".Widgets.RemoteWidgetMainService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

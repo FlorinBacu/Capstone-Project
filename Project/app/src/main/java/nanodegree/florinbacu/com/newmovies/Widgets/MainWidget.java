@@ -3,9 +3,11 @@ package nanodegree.florinbacu.com.newmovies.Widgets;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
+import java.io.Serializable;
 import java.util.List;
 
 import nanodegree.florinbacu.com.newmovies.ItemListActivity;
@@ -21,17 +23,10 @@ public class MainWidget extends AppWidgetProvider {
                                 int appWidgetId) {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.main_widget);
-        views.removeAllViews(R.id.content_widget_items);
-        RemoteViews itemView;
-        int i;
-        if (list != null) {
-            for (i = 0; i < Math.min(5, list.size()); i++) {
-                itemView = new RemoteViews(context.getPackageName(), R.layout.item_list_content_widget);
-                itemView.setTextViewText(R.id.content, list.get(i).title.split("-")[1]);
-                itemView.setImageViewUri(R.id.imageList, Uri.parse(ItemListActivity.aquaired_link.get(list.get(i).link)));
-                views.addView(R.id.content_widget_items, itemView);
-            }
-        }
+        Intent intent = new Intent(context, RemoteWidgetMainService.class);
+        intent.putExtra("list",(Serializable)list);
+        views.setRemoteAdapter(R.id.content_widget_items, intent);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.content_widget_items);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }

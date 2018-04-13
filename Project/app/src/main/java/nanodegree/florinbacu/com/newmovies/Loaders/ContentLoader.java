@@ -12,6 +12,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -172,7 +173,7 @@ public class ContentLoader extends AsyncTaskLoader<List<ContentLoader.ItemRSS>> 
     /**
      * A dummy item representing a piece of content.
      */
-    public static class ItemRSS {
+    public static class ItemRSS{
         public final String id;
         public final String title;
         public final String details;
